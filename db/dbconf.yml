@@ -1,0 +1,4 @@
+development:
+    driver: mysql
+#    open: localhost:3306*tmanager/root
+    open: root:@/tmanager
