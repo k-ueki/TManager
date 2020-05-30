@@ -1,12 +1,14 @@
 package usecase
 
 import (
+	"github.com/k-ueki/tmanager/server/config"
+	"github.com/pkg/errors"
+
 	"github.com/jinzhu/gorm"
 	"github.com/k-ueki/tmanager/server/domain/entity"
 	"github.com/k-ueki/tmanager/server/domain/model"
 	"github.com/k-ueki/tmanager/server/domain/repository"
 	"github.com/k-ueki/tmanager/server/infra/presistence"
-	"github.com/pkg/errors"
 )
 
 type (
@@ -15,15 +17,21 @@ type (
 		ListFollower(user *model.User) ([]*entity.User, error)
 		ListFollow(user *model.User) ([]*entity.User, error)
 		ListUnrequitedUsers(user *model.User) ([]*entity.User, error)
+		GetFollowersFromTwitterAPI() (*model.UserFromTwitterAPI, error)
+		GetFollowersIDsFromTwitterAPI() (*model.UserIDs, error)
 	}
 
 	followerUseCase struct {
+		config.TwitterAPIClient
 		repository.FollowerRepository
 	}
 )
 
 func NewFollowerUseCase(db *gorm.DB) FollowerUseCase {
-	return &followerUseCase{presistence.NewFollowerPersistence(db)}
+	return &followerUseCase{
+		*config.NewTwitterAPIClient(),
+		presistence.NewFollowerPersistence(db),
+	}
 }
 
 // The people following the User
@@ -58,54 +66,21 @@ func (u *followerUseCase) ListUnrequitedUsers(user *model.User) ([]*entity.User,
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to list the people I follow")
 	}
-
 	return unrequitedUsers, nil
 }
 
-//var ucl = NewUsersClient()
-//
-//var mode string
-//if r.ContentLength != 0 {
-//mode = GetMode(r)
-//}
-//
-//var dbh = &db.DBHandler{
-//	DB: config.SetDB(),
-//}
-//
-//pathToGetFollowers := baseURL + "followers/list.json"
-//pathToGetIds := baseURL + "followers/ids.json"
-//_, Ids := ucl.GetFollowersList(pathToGetFollowers, pathToGetIds)
-////bodyF, Ids := ucl.GetFollowersList(pathToGetFollowers, pathToGetIds)
-//
-//if mode == "register" {
-//_, fromdb := dbh.Select("followers")
-//
-////dbの情報とIdsを比較
-//newf, byef := db.FindNewBye(&Ids, fromdb)
-//fmt.Println("NEW", newf, "\nBYE", byef) //Ids
-//
-//type responseStruct struct {
-//Mode  string       `json:mode`
-//Users []users.User `json:users`
-//}
-//var resp = make([]responseStruct, 2)
-//if len(byef.Ids) != 0 {
-//resp[1].Mode = "bye"
-//users := ucl.ConvertIdsToUsers(byef.Ids)
-//resp[1].Users = users
-//fmt.Println("RESP", resp)
-//}
-//
-//if len(newf.Ids) != 0 {
-//resp[0].Mode = "new"
-//users := ucl.ConvertIdsToUsers(newf.Ids)
-//resp[0].Users = users
-//fmt.Println("RESP", resp)
-//}
-//
-//bytes, _ := json.Marshal(&resp)
-//fmt.Fprintf(w, string(bytes))
-//
-//return
-//}
+func (u *followerUseCase) GetFollowersFromTwitterAPI() (*model.UserFromTwitterAPI, error) {
+	followers := model.UserFromTwitterAPI{}
+	if err := u.TwitterAPIClient.HTTPRequest(config.PathToGetFollowers, &followers); err != nil {
+		return nil, err
+	}
+	return &followers, nil
+}
+
+func (u *followerUseCase) GetFollowersIDsFromTwitterAPI() (*model.UserIDs, error) {
+	ids := model.UserIDs{}
+	if err := u.TwitterAPIClient.HTTPRequest(config.PathToGetFollowersIDs, &ids); err != nil {
+		return nil, err
+	}
+	return &ids, nil
+}

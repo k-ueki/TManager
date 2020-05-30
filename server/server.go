@@ -67,12 +67,16 @@ func setRoutes(s *Server) {
 	{
 		users := api.Group("/users")
 		users.GET("/:id", app.FollowerController.Show)
+		users.GET("/new", app.FollowerController.ListNew)
+		users.GET("/bye", app.FollowerController.ListBye)
 		users.GET("/follow", app.FollowerController.ListFollow)
 		users.GET("/followed", app.FollowerController.ListFollower)
 		users.GET("/followers/diff/unrequited", app.FollowerController.ListUnrequited)
 		//followers.PUT("/init",InitFollowers)
 	}
 	{
+		twitter := api.Group("/twitter")
+		twitter.GET("", app.FollowerController.Hoge)
 		//tl  := api.Group("/timeline")
 		//tl.GET("",Timeline)
 	}
