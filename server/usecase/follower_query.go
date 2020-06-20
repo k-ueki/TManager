@@ -132,7 +132,7 @@ func (u *followerQueryUseCase) getUserInfoFromTwitterAPIByTid(ids []*uint64) ([]
 			uids += fmt.Sprintf("%d", *id)
 			break
 		}
-		uids += fmt.Sprintf("%d&", *id)
+		uids += fmt.Sprintf("%d,", *id)
 	}
 
 	var uinfos []*model.UserInfoFromTwitterAPI
