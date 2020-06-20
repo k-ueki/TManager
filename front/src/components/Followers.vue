@@ -21,40 +21,34 @@
 <!--                    <br/>-->
 <!--                    {{ newFollowers}}-->
                 </h3>
+                <v-btn
+                    @click="initFollower"
+                >Init</v-btn>
 
                 <v-row justify="center" v-for="newFollower in newFollowers" :key="newFollower.name">
                     <v-card
                             class="mx-auto"
                             max-width="344"
                             width = "344px"
+                            v-bind:href="'https://twitter.com/' + newFollower.screen_name"
                     >
+                        <v-img
+                                style="border-radius: 50%;"
+                                height="50%"
+                                width="50%"
+                                v-bind:src="newFollower.profile_image_url_https"
+                        ></v-img>
                         <v-layout row>
-                            <v-img
-                                src="http"
-                            ></v-img>
                             <v-card-text>
                                 <p class="display-1 text--primary">
                                     {{ newFollower.name }}
                                 </p>
                                 <p>{{ newFollower.description }}</p>
+                                <p>Follows : {{newFollower.friends_count}}    Followers : {{newFollower.followers_count}}</p>
+                                <p>{{newFollower.description}}</p>
                             </v-card-text>
                         </v-layout>
-                        <v-card-actions>
-                            <v-btn
-                                    text
-                                    color="deep-purple accent-4"
-                            >
-                                +
-                            </v-btn>
-                            <v-btn
-                                    text
-                                    color="deep-purple accent-4"
-                            >
-                                -
-                            </v-btn>
-                        </v-card-actions>
                     </v-card>
-
                 </v-row>
             </v-col>
 
@@ -67,8 +61,34 @@
                     {{ byeFollowers.length }} people unfollow you!
                 </h3>
 
-                <v-row justify="center">
+                <v-btn
+                        @click="initFollower"
+                >Init</v-btn>
 
+                <v-row justify="center" v-for="byeFollower in byeFollowers" :key="byeFollower.name">
+                    <v-card
+                            class="mx-auto"
+                            max-width="344"
+                            width = "344px"
+                            v-bind:href="'https://twitter.com/' + byeFollower.screen_name"
+                    >
+                        <v-img
+                                style="border-radius: 50%;"
+                                height="50%"
+                                width="50%"
+                                v-bind:src="byeFollower.profile_image_url_https"
+                        ></v-img>
+                        <v-layout row>
+                            <v-card-text>
+                                <p class="display-1 text--primary">
+                                    {{ byeFollower.name }}
+                                </p>
+                                <p>{{ byeFollower.description }}</p>
+                                <p>Follows : {{byeFollower.friends_count}}    Followers : {{byeFollower.followers_count}}</p>
+                                <p>{{byeFollower.description}}</p>
+                            </v-card-text>
+                        </v-layout>
+                    </v-card>
                 </v-row>
             </v-col>
         </v-row>
@@ -95,7 +115,7 @@
                     this.newFollowers = response.data
                 })
 
-            axios.get(apiBaseEndpoint + "")
+            axios.get(apiBaseEndpoint + "users/bye")
                 .then(response => {
                     this.byeFollowers = response.data
                 })
@@ -106,6 +126,14 @@
                     this.tab = false
                 }else{
                     this.tab = true
+                }
+            },
+            initFollower:function(){
+                if(confirm("for sure?")){
+                    axios.post(apiBaseEndpoint + "/users/init")
+                        .catch(err=>{
+                            alert("failed to init",err)
+                        })
                 }
             }
         }
