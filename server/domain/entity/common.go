@@ -2,7 +2,7 @@ package entity
 
 type (
 	TwitterID struct {
-		ID uint64 `json:"id"`
+		ID uint64 `json:"id" gorm:"column:follower_tid"`
 	}
 )
 

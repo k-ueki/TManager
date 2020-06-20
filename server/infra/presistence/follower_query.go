@@ -8,16 +8,16 @@ import (
 )
 
 type (
-	followerPersistence struct {
+	followerQueryPersistence struct {
 		DB *gorm.DB
 	}
 )
 
-func NewFollowerPersistence(db *gorm.DB) repository.FollowerRepository {
-	return &followerPersistence{db}
+func NewFollowerPersistence(db *gorm.DB) repository.FollowerQueryRepository {
+	return &followerQueryPersistence{db}
 }
 
-func (p *followerPersistence) FindByUserID(userID int) (*entity.User, error) {
+func (p *followerQueryPersistence) FindByUserID(userID int) (*entity.User, error) {
 	var row entity.User
 	if err := p.DB.LogMode(true).First(&row, userID).Error; err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ func (p *followerPersistence) FindByUserID(userID int) (*entity.User, error) {
 	return &row, nil
 }
 
-func (p *followerPersistence) FindFollowerByUserID(userID int) ([]*entity.User, error) {
+func (p *followerQueryPersistence) FindFollowerByUserID(userID int) ([]*entity.User, error) {
 	var rows []*entity.User
 	if err := p.DB.Joins("JOIN user_follow_user ufu ON user.id = ufu.user_id").Where("ufu.follow_user_id = ?", userID).Find(&rows).Error; err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (p *followerPersistence) FindFollowerByUserID(userID int) ([]*entity.User, 
 	return rows, nil
 }
 
-func (p *followerPersistence) FindFollowByUserID(userID int) ([]*entity.User, error) {
+func (p *followerQueryPersistence) FindFollowByUserID(userID int) ([]*entity.User, error) {
 	var rows []*entity.User
 	if err := p.DB.Joins("JOIN user_follow_user ufu ON user.id = ufu.follow_user_id").Where("ufu.user_id = ?", userID).Find(&rows).Error; err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (p *followerPersistence) FindFollowByUserID(userID int) ([]*entity.User, er
 	return rows, nil
 }
 
-func (p *followerPersistence) FindUnrequitedUser(userID int) ([]*entity.User, error) {
+func (p *followerQueryPersistence) FindUnrequitedUser(userID int) ([]*entity.User, error) {
 	var rows []*entity.User
 	if err := p.DB.
 		Joins(`JOIN (
@@ -57,7 +57,7 @@ func (p *followerPersistence) FindUnrequitedUser(userID int) ([]*entity.User, er
 	return rows, nil
 }
 
-func (p *followerPersistence) FindFollowerTwitterIDsByUserID(userID int) ([]*entity.TwitterID, error) {
+func (p *followerQueryPersistence) FindFollowerTwitterIDsByUserID(userID int) ([]*entity.TwitterID, error) {
 	var rows []*entity.TwitterID
 	if err := p.DB.Table("user_follower_tid").Where("user_id = ?", userID).Find(&rows).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to find follower TwitterIDs By userID")

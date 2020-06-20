@@ -5,7 +5,7 @@ import (
 )
 
 type (
-	FollowerRepository interface {
+	FollowerQueryRepository interface {
 		FindByUserID(userID int) (*entity.User, error)
 		FindFollowerByUserID(userID int) ([]*entity.User, error)
 		FindFollowByUserID(userID int) ([]*entity.User, error)

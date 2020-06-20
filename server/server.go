@@ -12,7 +12,7 @@ import (
 
 type (
 	App struct {
-		controller.FollowerController
+		controller.FollowerQueryController
 	}
 
 	Server struct {
@@ -63,20 +63,19 @@ func setRoutes(s *Server) {
 	}
 
 	api := s.Echo.Group("/api/v1")
-
 	{
 		users := api.Group("/users")
-		users.GET("/:id", app.FollowerController.Show)
-		users.GET("/new", app.FollowerController.ListNew)
-		users.GET("/bye", app.FollowerController.ListBye)
-		users.GET("/follow", app.FollowerController.ListFollow)
-		users.GET("/followed", app.FollowerController.ListFollower)
-		users.GET("/followers/diff/unrequited", app.FollowerController.ListUnrequited)
+		users.GET("/:id", app.FollowerQueryController.Show)
+		users.GET("/new", app.FollowerQueryController.ListNew)
+		users.GET("/bye", app.FollowerQueryController.ListBye)
+		users.GET("/follow", app.FollowerQueryController.ListFollow)
+		users.GET("/followed", app.FollowerQueryController.ListFollower)
+		users.GET("/followers/diff/unrequited", app.FollowerQueryController.ListUnrequited)
 		//followers.PUT("/init",InitFollowers)
 	}
 	{
 		twitter := api.Group("/twitter")
-		twitter.GET("", app.FollowerController.Hoge)
+		twitter.GET("", app.FollowerQueryController.Hoge)
 		//tl  := api.Group("/timeline")
 		//tl.GET("",Timeline)
 	}
