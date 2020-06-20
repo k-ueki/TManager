@@ -18,8 +18,6 @@
             >
                 <h3 class="headline font-weight-bold mb-3">
                     {{ newFollowers.length }} people follow you New!
-<!--                    <br/>-->
-<!--                    {{ newFollowers}}-->
                 </h3>
                 <v-btn
                     @click="initFollower"
@@ -100,6 +98,7 @@
 
     const apiBaseEndpoint = "http://localhost:7777/api/v1"
 
+
     export default {
         name: 'Followers',
         data (){
@@ -131,6 +130,10 @@
             initFollower:function(){
                 if(confirm("for sure?")){
                     axios.post(apiBaseEndpoint + "/users/init")
+                        .then(resp => {
+                            this.newFollower = []
+                            console.log(resp)
+                        })
                         .catch(err=>{
                             alert("failed to init",err)
                         })
