@@ -28,8 +28,8 @@ type (
 	}
 )
 
-func NewFollowerController(db *gorm.DB) FollowerQueryController {
-	return &followerQueryController{usecase.NewFollowerUseCase(db)}
+func NewFollowerQueryController(db *gorm.DB) FollowerQueryController {
+	return &followerQueryController{usecase.NewFollowerQueryUseCase(db)}
 }
 
 func (c *followerQueryController) ListFollow(ctx echo.Context) error {

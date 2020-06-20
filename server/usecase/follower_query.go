@@ -30,10 +30,10 @@ type (
 	}
 )
 
-func NewFollowerUseCase(db *gorm.DB) FollowerQueryUseCase {
+func NewFollowerQueryUseCase(db *gorm.DB) FollowerQueryUseCase {
 	return &followerQueryUseCase{
 		*config.NewTwitterAPIClient(),
-		presistence.NewFollowerPersistence(db),
+		presistence.NewFollowerQueryPersistence(db),
 	}
 }
 

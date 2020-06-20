@@ -13,6 +13,7 @@ import (
 type (
 	App struct {
 		controller.FollowerQueryController
+		controller.FollowerCommandController
 	}
 
 	Server struct {
@@ -59,7 +60,8 @@ func run() error {
 
 func setRoutes(s *Server) {
 	app := &App{
-		controller.NewFollowerController(s.DB),
+		controller.NewFollowerQueryController(s.DB),
+		controller.NewFollowerCommandController(s.DB),
 	}
 
 	api := s.Echo.Group("/api/v1")

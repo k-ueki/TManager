@@ -13,7 +13,7 @@ type (
 	}
 )
 
-func NewFollowerPersistence(db *gorm.DB) repository.FollowerQueryRepository {
+func NewFollowerQueryPersistence(db *gorm.DB) repository.FollowerQueryRepository {
 	return &followerQueryPersistence{db}
 }
 

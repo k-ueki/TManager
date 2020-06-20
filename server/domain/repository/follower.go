@@ -12,4 +12,7 @@ type (
 		FindUnrequitedUser(userID int) ([]*entity.User, error)
 		FindFollowerTwitterIDsByUserID(userID int) ([]*entity.TwitterID, error)
 	}
+
+	FollowerCommandRepository interface {
+	}
 )
