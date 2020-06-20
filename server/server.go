@@ -67,6 +67,7 @@ func setRoutes(s *Server) {
 	api := s.Echo.Group("/api/v1")
 	{
 		users := api.Group("/users")
+		users.POST("/init", app.FollowerCommandController.Init)
 		users.GET("/:id", app.FollowerQueryController.Show)
 		users.GET("/new", app.FollowerQueryController.ListNew)
 		users.GET("/bye", app.FollowerQueryController.ListBye)

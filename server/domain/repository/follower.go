@@ -14,5 +14,6 @@ type (
 	}
 
 	FollowerCommandRepository interface {
+		Reset(inp []interface{}) error
 	}
 )
