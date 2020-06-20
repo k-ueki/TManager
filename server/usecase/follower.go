@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"fmt"
+
 	"github.com/k-ueki/tmanager/server/config"
 	"github.com/pkg/errors"
 
@@ -16,6 +18,7 @@ type (
 		Show(userID int) (*entity.User, error)
 		ListFollower(user *model.User) ([]*entity.User, error)
 		ListFollow(user *model.User) ([]*entity.User, error)
+		ListNewFollower(user *model.User) ([]*entity.User, error)
 		ListUnrequitedUsers(user *model.User) ([]*entity.User, error)
 		GetFollowersFromTwitterAPI() (*model.UserFromTwitterAPI, error)
 		GetFollowersIDsFromTwitterAPI() (*model.UserIDs, error)
@@ -83,4 +86,25 @@ func (u *followerUseCase) GetFollowersIDsFromTwitterAPI() (*model.UserIDs, error
 		return nil, err
 	}
 	return &ids, nil
+}
+
+func (u *followerUseCase) ListNewFollower(user *model.User) ([]*entity.User, error) {
+	nowFollower, err := u.GetFollowersIDsFromTwitterAPI()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get followersIDs from TwitterAPI")
+	}
+
+	original, err := u.FollowerRepository.FindFollowerTwitterIDsByUserID(user.ID)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get followersIDs from DB")
+	}
+
+	//TODO:entityにconverterがあるのは気持ち悪い
+	return u.getNewFollowerList(nowFollower.ConvertUserIDsToUint64(), entity.ConvertTwitterIDToUint64(original)), nil
+}
+
+func (u *followerUseCase) getNewFollowerList(now, original []*uint64) []*entity.User {
+	fmt.Println("now", now)
+	fmt.Println("ori", original)
+	return nil
 }

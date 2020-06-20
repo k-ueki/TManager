@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/k-ueki/tmanager/server/domain/entity"
 	"github.com/k-ueki/tmanager/server/domain/repository"
+	"github.com/pkg/errors"
 )
 
 type (
@@ -54,5 +55,12 @@ func (p *followerPersistence) FindUnrequitedUser(userID int) ([]*entity.User, er
 	}
 
 	return rows, nil
+}
 
+func (p *followerPersistence) FindFollowerTwitterIDsByUserID(userID int) ([]*entity.TwitterID, error) {
+	var rows []*entity.TwitterID
+	if err := p.DB.Table("user_follower_tid").Where("user_id = ?", userID).Find(&rows).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to find follower TwitterIDs By userID")
+	}
+	return rows, nil
 }

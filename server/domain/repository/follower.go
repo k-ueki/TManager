@@ -10,5 +10,6 @@ type (
 		FindFollowerByUserID(userID int) ([]*entity.User, error)
 		FindFollowByUserID(userID int) ([]*entity.User, error)
 		FindUnrequitedUser(userID int) ([]*entity.User, error)
+		FindFollowerTwitterIDsByUserID(userID int) ([]*entity.TwitterID, error)
 	}
 )

@@ -23,3 +23,12 @@ type (
 		IDs []int64 `json:"ids"`
 	}
 )
+
+func (ui *UserIDs) ConvertUserIDsToUint64() []*uint64 {
+	var resp []*uint64
+	for _, id := range ui.IDs {
+		tmp := uint64(id)
+		resp = append(resp, &tmp)
+	}
+	return resp
+}
